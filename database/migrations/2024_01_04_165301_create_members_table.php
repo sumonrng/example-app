@@ -11,11 +11,14 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('verification_codes', function (Blueprint $table) {
+        Schema::create('members', function (Blueprint $table) {
             $table->id();
-            $table->bigInteger('user_id');
-            $table->string('otp');
-            $table->timestamp('expire_at')->nullable();
+            $table->string('sponsor_id');
+            $table->string('username')->unique();
+            $table->string('email',50)->unique()->safeEmail();
+            $table->string('name',30);
+            $table->string('country',20);
+            $table->string('city',20);
             $table->timestamps();
         });
     }
@@ -25,6 +28,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('verification_codes');
+        Schema::dropIfExists('members');
     }
 };
