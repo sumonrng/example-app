@@ -71,3 +71,4 @@ Route::resource('balances.comments',CommentController::class)->shallow();
 Route::view('/addUser','member');
 Route::post('/member',[MemberController::class,'addUser'])->name('addUser');
 Route::get('/showuser',[MemberController::class,'show'])->name('show');
+Route::get('/singleuser/{id}',[MemberController::class,'singleUser'])->name('singleuser');
