@@ -48,6 +48,24 @@
             @enderror
         </span>
         <div class="form-group">
+            <label for="exampleInputPassword1">start date</label>
+            <input type="date" value="{{old('start_date')}}" class="form-control" id="start_date" name="start_date" placeholder="start_date">
+        </div>
+        <span class="text-danger">
+            @error('start_date')
+                {{$message}}
+            @enderror
+        </span>
+        <div class="form-group">
+            <label for="exampleInputPassword1">finish date</label>
+            <input type="date" value="{{old('finish_date')}}" class="form-control" id="finish_date" name="finish_date" placeholder="finish_date">
+        </div>
+        <span class="text-danger">
+            @error('finish_date')
+                {{$message}}
+            @enderror
+        </span>
+        <div class="form-group">
             <label for="exampleInputPassword1">City</label>
             <input type="text" value="{{old('city')}}" class="form-control" id="city" name="city" placeholder="city">
         </div>

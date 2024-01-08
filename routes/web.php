@@ -39,7 +39,7 @@ Route::get('/test2/{id}',function($id){
     return view('user',['id'=>$user]);
 })->name('test2');
 
-Auth::routes();
+// Auth::routes();
 
 Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
 Route::controller(AuthOtpController::class)->group(function(){
@@ -70,3 +70,4 @@ Route::get('/test',TestingController::class);
 Route::resource('balances.comments',CommentController::class)->shallow();
 Route::view('/addUser','member');
 Route::post('/member',[MemberController::class,'addUser'])->name('addUser');
+Route::get('/showuser',[MemberController::class,'show'])->name('show');
