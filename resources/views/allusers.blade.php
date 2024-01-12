@@ -9,6 +9,7 @@
 </head>
 <body>
     <h1>All Member's Information</h1>
+    <h4><a href="{{ route('member') }}" class="btn btn-success btn-sm"> Add Member</a></h4>
 <table class="table">
   <thead>
     <tr>
@@ -20,10 +21,12 @@
       <th scope="col">country</th>
       <th scope="col">city</th>
       <th scope="col">View</th>
+      <th scope="col">Update</th>
+      <th scope="col">Delete</th>
     </tr>
   </thead>
   <tbody>
-    @foreach ($data as $id=>$user)
+    @foreach ($members as $id=>$user)
     <tr>
       <td>{{$user->id }}</td>
       <td>{{$user->sponsor_id }}</td>
@@ -31,11 +34,18 @@
       <td>{{$user->email }}</td>
       <td>{{$user->name }}</td>
       <td>{{$user->country }}</td>
-      <td>{{$user->city }}</td>
+      <td>{{$user->city_name }}</td>
       <td><a href="{{ route('singleuser',$user->id)}}" class="btn btn-primary btn-sm"> Show</a></td>
+      <td><a href="{{ route('update.edit',$user->id)}}" class="btn btn-success btn-sm"> Update</a></td>
+      <td><a href="{{ route('deleteuser',$user->id)}}" class="btn btn-danger btn-sm"> Delete</a></td>
     </tr>
     @endforeach
   </tbody>
 </table>
+<div class="mt-5">
+  {{-- {{$data->links('pagination::bootstrap-4')}} --}}
+  {{-- {{$data->links('pagination::bootstrap-5')}} --}}
+  {{$members->links()}}
+</div>
 </body>
 </html>

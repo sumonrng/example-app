@@ -44,7 +44,7 @@ class CommentController extends Controller
      */
     public function edit(string $id)
     {
-        //
+        echo 'Comments edit' . $id;
     }
 
     /**

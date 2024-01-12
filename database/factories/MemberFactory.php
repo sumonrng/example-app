@@ -19,6 +19,7 @@ class MemberFactory extends Factory
         return [
             'sponsor_id'=>fake()->name(),
             'username'=>fake()->name(5),
+            'age'=>fake()->postcode(),
             'email'=>fake()->email(),
             'name'=>fake()->name(),
             'country'=>fake()->country(),

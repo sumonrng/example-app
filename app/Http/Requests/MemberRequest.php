@@ -23,6 +23,7 @@ class MemberRequest extends FormRequest
     public function rules(): array
     {
         return [
+            'sponsor_id'=>'required | min:2', //| exists:members,username
             'username'=>'required | min:2',
             'email'=>'required',
             'age'=>'required | numeric',
@@ -48,13 +49,13 @@ class MemberRequest extends FormRequest
             'email'=>'Email Address'
         ];
     }
-    protected function prepareForValidation() : void
-    {
-        $this->merge([
-            'username'=>Str::slug($this->username),
-            // 'username'=>strtoupper($this->username),
-            // 'password'=>hash($this->password,true),
-        ]);
-    }
+    // protected function prepareForValidation() : void
+    // {
+    //     $this->merge([
+    //         'username'=>Str::slug($this->username),
+    //         // 'username'=>strtoupper($this->username),
+    //         // 'password'=>hash($this->password,true),
+    //     ]);
+    // }
     protected $stopOnFirstFailure = true;
 }

@@ -5,84 +5,155 @@ namespace App\Http\Controllers;
 use App\Http\Controllers\Controller;
 use Closure;
 // use App\Rules\Uppercase;
-// use App\Http\Requests\MemberRequest;
+use App\Http\Requests\MemberRequest;
+use Illuminate\Database\Query\JoinClause;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
 
 class MemberController extends Controller
 {
-    public function addUser(Request $req)
+
+    public function rawshow()
     {
-        $req->validate([
-            'username'=>['required', function(string $attribute,mixed $value, Closure $fail) : void {
-                if(strtoupper($value) !== $value){
-                    $fail('The :attribute hs fsdfsdfsd');
-                }
-            }],
-            'email'=>'required',
-            'age'=>'required | numeric',
-            // 'start_date' => 'required|date|after:tomorrow',
-            // 'finish_date' => 'required|date|after:start_date',
-            'password' => [
-                'required',
-                'min:6'
-            ]
-            ]);
-        return $req->all();
-        // return $req->except(['username','email']);
-        // return $req->only(['username','email']);
+        $member = DB::table('members')
+        ->select(DB::raw('count(*) as member_count'), 'age' ,'username')
+        // ->selectRaw('count(*) as member_count , age ,username')
+        ->groupByRaw('age,username')
+        ->havingRaw('age > ?',[20])
+        // ->selectRaw('id,sponsor_id,username,email,age,country')
+                // ->orderByRaw('age DESC,username DESC')
+                // ->orderByDesc('age')
+                // ->whereRaw('id = 5') 
+                // ->whereRaw('id = ?',[4])
+                ->get();
+                // ->toSql();
+        return $member;
+        // $member = DB::delete('delete from members where id = ?', [10]);
+        // $member = DB::update("update members set email='rahim@gmail.com' where id=?",[10]);
+        // return $member;
+        // $member = DB::insert("insert into members(sponsor_id,username,age,email,name,country,city_id,created_at,updated_at) value(?,?,?,?,?,?,?,?,?)",['sumon01','rahim01',20,'eu@gmail.com','Abdus Salam','India',1,now(),now()]);
+        // return $member;
+        // $member = DB::select("select * from members");
+        // $member = DB::select("select * from members where id = :id",['id'=>1]);
+        // $member = DB::select("select username,email,name from members where username like ? && name like ?",['h%','m%']);
+        // $member = DB::select("select username,email,name from members where id=?",[1]);
+        // foreach($member as $user){
+        //     echo $user->username ."<br>";
+        // }
+        // return $member;
+
+    }
+
+
+    public function updateMember(MemberRequest $req, string $id){
+        // return $id;
+        $member = DB::table('members')
+                ->where('id',$id)
+                ->update([
+                    'sponsor_id'=>$req->sponsor_id,
+                    'username'=>$req->username,
+                    'age'=>$req->age,
+                    'email'=>$req->email,
+                    'name'=>$req->name,
+                    'country'=>$req->country,
+                    'city_id'=>$req->city,
+                    'created_at'=>now(),
+                    'updated_at'=>now()
+                ]);
+                // ->increment('age',1,['city'=>'London']); //incrementEach
+                // ->decrement('age',1,['city'=>'Rajshahi']);   //updateOrInsert increment update
+                if($member){
+                    return redirect()->route('show');
+                }  
+                
+                    
+    }
+    public function addUser(MemberRequest $req)
+    {
+        // return $req;
+        $member = DB::table('members')->insert([
+            'sponsor_id'=>$req->sponsor_id,
+            'username'=>$req->username,
+            'age'=>$req->age,
+            'email'=>$req->email,
+            'name'=>$req->name,
+            'country'=>$req->country,
+            'city_id'=>$req->city,
+            'created_at'=>now(),
+            'updated_at'=>now()
+        ]);
+        if($member){
+            echo "Data successfully added";
+            return redirect()->route('show');
+        }else{
+            echo "Data not added for error";
+        }
     }
     public function show(){
-        $date = now();
-        // if(DB::table('members')->where('id',1)->exists()){
-            // if(DB::table('members')->where('id',1)->doesntExist()){
             $members = DB::table('members')
-                        // ->count();
-                        // ->sum('id');
-                        // ->average('id');
-                        // ->max('id');
-                        ->min('id');
-                        // ->latest()
-                        // ->inRandomOrder()
-                        // ->limit(3)
-                        // ->offset(3)
-                        // ->oldest()
-                        // ->first();
-                        // ->orderBy('name')
+                        ->leftJoin('cities',function(JoinClause $join){
+                            $join->on('members.city_id','=','cities.id'); })
+                        ->select('members.*','cities.city_name')
                         // ->get();
-                        // ->paginate(2);
-            return $members;
-        // }else{
-        //     return 'No data exists';
-        // }
-        
-        // $members = DB::table('members')->find(2);
-        // return $members;
-        // $members = DB::table('members')
-                    // ->select('city')
-                    // ->pluck('name'); //return Array
-                    // ->pluck('name','email'); //return Array
-                    // ->distinct('city')
-                    // ->where('name','like','O%')
-                    // ->whereBetween('id',[1,3])
-                    // ->whereIn('id',[2,5,6])
-                    // ->get();
-        // $members = DB::table('members')->get();
-        // $members = DB::table('members')->whereDate('created_at','<=',$date)->get();
-        // $members = DB::table('members')->whereDay('created_at','05')->get();
-        // $members = DB::table('members')->get();
-        // $members = DB::table('members')->find(1);
-        // return $members;
+                        // return $members;
+                        // ->select('members.*','cities.city_name')
+                        // ->join('cities','members.city_id','=','cities.id')
+                        // ->select(DB::raw('count(*) as student_count'),'cities.city_name')
+                        // ->groupBy('city_name')
+                        // ->havingBetween('student_count',[2,3])               //where()
+                        // ->get();
+                        ->paginate(5);
+                        // return $members;
+                        // ->fragment('users');
+                        // ->appends(['sort' => 'votes']);
+                        // ->paginate(3,'*','number',3);
+                        // ->simplePaginate(3);
+                        // return $members;
+        return view('allusers',compact('members'));
         // return view('allusers',['data'=>$members]);
-        // DD($members);
-        // dump($members);
-        // DD($members);
+    }
+    public function store(){
+        $member = DB::table('cities')->get();
+        // return $member;
+        return view('member',['data'=>$member]);
     }
     public function singleUser(string $id){
-        $member = DB::table('members')->where('id',$id)->get();
+        $member = DB::table('members')
+                ->leftJoin('cities',function(JoinClause $join){
+                    $join->on('members.city_id','=','cities.id'); })
+                ->select('members.*','cities.city_name')
+                ->where('members.id',$id)
+                ->get();
+                // ->toSql();
+                // return $member;
         // $member = DB::table('members')->find($id);
         return view('singleuser',['data'=>$member]);
+    }
+    public function deleteUser(string $id)
+    {
+        $member = DB::table('members')
+                    ->where('id',$id)
+                    ->delete();
+        if($member){
+            return redirect()->route('show');
+        }        
+    }
+    public function editUser(string $id)
+    {
+        $member = DB::table('members')
+                    ->find($id);
+        $cities = DB::table('cities')->get();
+        return view('edit',['data'=>$member,'cities'=>$cities]);
+    }
+    public function whenMethod(){
+        $member = DB::table('members')
+                // ->when(true, function($query){
+                ->when(false, function($query){
+                    $query->where('username','=','happy');
+                })
+                ->get();
+                return $member;
     }
  
 }

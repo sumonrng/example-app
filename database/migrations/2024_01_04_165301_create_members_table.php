@@ -15,10 +15,13 @@ return new class extends Migration
             $table->id();
             $table->string('sponsor_id');
             $table->string('username')->unique();
+            $table->integer('age')->nullable();
             $table->string('email',50)->unique()->safeEmail();
             $table->string('name',30);
             $table->string('country',20);
-            $table->string('city',20);
+            $table->unsignedBigInteger('city_id');
+            // $table->primary('city');
+            $table->foreign('city_id')->references('id')->on('cities');
             $table->timestamps();
         });
     }

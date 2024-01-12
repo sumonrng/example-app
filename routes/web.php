@@ -6,6 +6,7 @@ use App\Http\Controllers\CommentController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\MemberController;
 use App\Http\Controllers\TestingController;
+use Database\Factories\MemberFactory;
 
 function getUsers(){
     return   [
@@ -50,7 +51,7 @@ Route::controller(AuthOtpController::class)->group(function(){
     Route::post('/otp/login','loginWithOtp')->name('otp.getLogin');
 });
 
-// Route::get('/member',[MemberController::class,'ShowMember'])->name('member');
+
 // Route::get('/blog',[MemberController::class,'showBlog'])->name('blog');
 // Route::get('/user/{id}',[MemberController::class,'userMember'])->name('user');
 
@@ -61,14 +62,25 @@ Route::controller(AuthOtpController::class)->group(function(){
 // });
 Route::get('/test',TestingController::class);
 // Route::resource('balances',BalanceController::class)->only(['create','update']);
-// Route::resource('balances',BalanceController::class);
+Route::resource('balances',BalanceController::class);
 // Route::resource('balances',BalanceController::class)->except(['create','update']);
 // Route::resource('balances',BalanceController::class)->names([
-//     'create'=>'balances.save'
+//     'create'=>'balances.save',
+//     'show'=>'balances.allshow'
 // ]);
 // Route::resource('balances.comments',CommentController::class);
 Route::resource('balances.comments',CommentController::class)->shallow();
 Route::view('/addUser','member');
-Route::post('/member',[MemberController::class,'addUser'])->name('addUser');
-Route::get('/showuser',[MemberController::class,'show'])->name('show');
-Route::get('/singleuser/{id}',[MemberController::class,'singleUser'])->name('singleuser');
+Route::controller(MemberController::class)->group(function(){
+    Route::get('/member','store')->name('member');
+    Route::post('/addUser','addUser')->name('addUser');
+    Route::get('/showuser','show')->name('show');
+    Route::get('/singleuser/{id}','singleUser')->name('singleuser');
+    // Route::post('/update/{id}','updateMember')->name('update');
+    Route::put('/update/{id}','updateMember')->name('update');
+    Route::get('/update/edit/{id}','editUser')->name('update.edit');
+    Route::get('/delete/{id}','deleteUser')->name('deleteuser');
+    Route::get('/when','whenMethod')->name('when');
+    Route::get('/rawshow','rawshow')->name('rawshow');
+});
+

@@ -15,7 +15,7 @@
         <h3>Email:{{$member->email}}</h3>
         <h3>Name:{{$member->name}}</h3>
         <h3>Country:{{$member->country}}</h3>
-        <h3>City:{{$member->city}}</h3>
+        <h3>City:{{$member->city_name}}</h3>
     @endforeach
 </body>
 </html>

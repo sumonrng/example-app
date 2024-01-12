@@ -10,12 +10,14 @@
 <title>Document</title>
 </head>
 <body>
-    <form action="{{ route('addUser') }}" method="POST">
+    <form action="{{ route('update',$data->id) }}" method="POST">
         @csrf
-        {{-- @dd($data) --}}
+        {{-- {{method_field('PUT')}} --}}
+        @method('PUT')
+        {{-- @dd($cities) --}}
         <div class="form-group" >
           <label for="exampleInputEmail1">Sponsor ID</label>
-          <input type="text" value="{{old('sponsor_id')}}" class="form-control @error('sponsor_id') is-invalid @enderror" id="sponsor_id" name="sponsor_id" aria-describedby="emailHelp" placeholder="User Name">
+          <input type="text" value="{{$data->sponsor_id}}" class="form-control @error('sponsor_id') is-invalid @enderror" id="sponsor_id" name="sponsor_id" aria-describedby="emailHelp" placeholder="User Name">
         </div>
         <span class="text-danger">
             @error('sponsor_id')
@@ -24,7 +26,7 @@
         </span>
         <div class="form-group" >
           <label for="exampleInputEmail1">User Name</label>
-          <input type="text" value="{{old('username')}}" class="form-control @error('username') is-invalid @enderror" id="username" name="username" aria-describedby="emailHelp" placeholder="User Name">
+          <input type="text" value="{{$data->username}}" class="form-control @error('username') is-invalid @enderror" id="username" name="username" aria-describedby="emailHelp" placeholder="User Name">
         </div>
         <span class="text-danger">
             @error('username')
@@ -33,7 +35,7 @@
         </span>
         <div class="form-group">
           <label for="exampleInputPassword1">Email</label>
-          <input type="email" value="{{old('email')}}" class="form-control @error('email') is-invalid @enderror" id="email" name="email" placeholder="email">
+          <input type="email" value="{{$data->email}}" class="form-control @error('email') is-invalid @enderror" id="email" name="email" placeholder="email">
         </div>
         <span class="text-danger">
             @error('email')
@@ -42,7 +44,7 @@
         </span>
         <div class="form-group">
           <label for="exampleInputPassword1">Name</label>
-          <input type="text" value="{{old('name')}}" class="form-control @error('name') is-invalid @enderror" id="name" name="name" placeholder="name">
+          <input type="text" value="{{$data->name}}" class="form-control @error('name') is-invalid @enderror" id="name" name="name" placeholder="name">
         </div>
         <span class="text-danger">
             @error('name')
@@ -51,7 +53,7 @@
         </span>
         <div class="form-group">
           <label for="exampleInputPassword1">Country</label>
-          <input type="text" value="{{old('country')}}" class="form-control @error('country') is-invalid @enderror" id="country" name="country" placeholder="country">
+          <input type="text" value="{{$data->country}}" class="form-control @error('country') is-invalid @enderror" id="country" name="country" placeholder="country">
         </div>
         <span class="text-danger">
             @error('country')
@@ -60,7 +62,7 @@
         </span>
         <div class="form-group">
             <label for="exampleInputPassword1">Age</label>
-            <input type="text" value="{{old('age')}}" class="form-control" id="age" name="age" placeholder="age">
+            <input type="text" value="{{$data->age}}" class="form-control" id="age" name="age" placeholder="age">
         </div>
         <span class="text-danger">
             @error('age')
@@ -68,13 +70,15 @@
             @enderror
         </span>
         <div class="form-group">
-            <label for="exampleInputPassword1">City</label>
-                <select class="form-control" id="city" name="city">
-                    <option selected>Select City</option>
-                    @foreach ($data as $id=>$member)
-                    <option value="{{ $member->id}}">{{ $member->city_name}}</option>
-                    @endforeach
-                </select>
+            <label for="exampleInputPassword1">City</label><select class="form-control" id="city" name="city">
+                @foreach ($cities as $id=>$city)
+                    @if ($data->city_id==$city->id) 
+                        <option selected value="{{ $city->id}}">{{ $city->city_name}}</option> 
+                    @elseif ($data->city_id!=$city->id)
+                        <option value="{{ $city->id}}">{{$city->city_name}}</option>
+                    @endif
+                @endforeach
+            </select>
         </div>
         
         <span class="text-danger">
@@ -84,7 +88,7 @@
         </span>
         <div class="form-group">
             <label for="exampleInputPassword1">Password</label>
-            <input type="text" value="{{old('password')}}" class="form-control" id="password" name="password" placeholder="password">
+            <input type="text" value="" class="form-control" id="password" name="password" placeholder="password">
         </div>
         <span class="text-danger">
             @error('password')
